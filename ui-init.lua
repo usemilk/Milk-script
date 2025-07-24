@@ -521,7 +521,7 @@ local function createModuleButton(data)
     elseif data.name == "FOV" then
         slider = createSlider(button, 1, 100, 70, data.color, "Field of View")
     elseif data.name == "Inf Jump" then
-        slider = createSlider(button, 1, 50, 16, data.color, "Jump Power")
+        slider = createSlider(button, 1, 150, 50, data.color, "Jump Power")
     end
 
     local isEnabled = false
@@ -607,6 +607,7 @@ end
 
 local moduleData = {
     {name = "ESP", color = Color3.fromRGB(255, 200, 120)},
+    {name = "Aimbot", color = Color3.fromRGB(120, 255, 138)},
     {name = "Hitbox Expander", color = Color3.fromRGB(120, 255, 200)},
     {name = "Inf Jump", color = Color3.fromRGB(255, 120, 200)},
     {name = "Speed", color = Color3.fromRGB(120, 180, 255)},
@@ -790,4 +791,4 @@ spawn(function()
     end)
 end)
 
-return gui
+-- real coding from now on, not just ui btw this was made by joshy!
