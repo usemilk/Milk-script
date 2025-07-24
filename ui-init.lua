@@ -1,8 +1,11 @@
-local StarterGui = game:GetService("StarterGui")
+local _StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
+
+local currentValue
+local dragging
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "MilkGUI"
@@ -222,7 +225,7 @@ local function createSlider(parent, minValue, maxValue, defaultValue, color, tit
     sliderTitle.BackgroundTransparency = 1
     sliderTitle.Text = title or "Value"
     sliderTitle.TextColor3 = Color3.fromRGB(220, 220, 240)
-    sliderTitle.Font = Enum.Font.GothamSemibold
+    sliderTitle.Font = Enum.Font.GothamMedium
     sliderTitle.TextSize = 13
     sliderTitle.TextXAlignment = Enum.TextXAlignment.Left
     sliderTitle.Parent = sliderFrame
@@ -428,7 +431,7 @@ local function createModuleButton(data)
     moduleTitle.BackgroundTransparency = 1
     moduleTitle.Text = data.name
     moduleTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    moduleTitle.Font = Enum.Font.GothamSemibold
+    moduleTitle.Font = Enum.Font.GothamMedium
     moduleTitle.TextSize = 14 
     moduleTitle.TextXAlignment = Enum.TextXAlignment.Left
     moduleTitle.TextYAlignment = Enum.TextYAlignment.Center
@@ -480,9 +483,9 @@ local function createModuleButton(data)
     if data.name == "Speed" then
         slider = createSlider(button, 1, 28, 16, data.color, "Walking Speed")
     elseif data.name == "FOV" then
-        slider = createSlider(button, 1, 100, 70, data.color, "Field of View")
+        slider = createSlider(button, 40, 100, 70, data.color, "Field of View")
     elseif data.name == "Inf Jump" then
-        slider = createSlider(button, 1, 50, 16, data.color, "Jump Power")
+        slider = createSlider(button, 1, 75, 50, data.color, "Jump Power")
     end
 
     local isEnabled = false
@@ -716,3 +719,5 @@ spawn(function()
         end
     end)
 end)
+
+return gui
