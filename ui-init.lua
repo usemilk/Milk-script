@@ -7,7 +7,7 @@ local UIS = game:GetService("UserInputService")
 local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
 local scaleFactor = isMobile and 0.6 or 1
 local mainFrameWidth = isMobile and 260 or 400
-local mainFrameHeight = isMobile and 420 or 650
+local mainFrameHeight = isMobile and 350 or 500
 local buttonWidth = isMobile and 220 or 350
 
 local gui = Instance.new("ScreenGui")
