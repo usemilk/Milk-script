@@ -139,7 +139,7 @@ logoGlow.Parent = titleContainer
 
 local title = Instance.new("TextLabel")
 title.Name = "Title"
-title.Text = "MILK"
+title.Text = "Milk"
 title.Size = UDim2.new(0, 120 * scaleFactor, 1, 0)
 title.Position = UDim2.new(0, 60 * scaleFactor, 0, 0)
 title.BackgroundTransparency = 1
@@ -608,7 +608,8 @@ end
 local moduleData = {
     {name = "ESP", color = Color3.fromRGB(255, 200, 120)},
     {name = "Aimbot", color = Color3.fromRGB(120, 255, 138)},
-    {name = "Hitbox Expander", color = Color3.fromRGB(120, 255, 200)},
+    {name = "Triggerbot", color = Color3.fromRGB(120, 235, 255)},
+    {name = "Hitbox Expander", color = Color3.fromRGB(255, 224, 120)},
     {name = "Inf Jump", color = Color3.fromRGB(255, 120, 200)},
     {name = "Speed", color = Color3.fromRGB(120, 180, 255)},
     {name = "FOV", color = Color3.fromRGB(200, 120, 255)},
