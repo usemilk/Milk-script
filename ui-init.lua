@@ -10,6 +10,11 @@ local mainFrameWidth = isMobile and 260 or 400
 local mainFrameHeight = isMobile and 350 or 500
 local buttonWidth = isMobile and 220 or 350
 
+local exists = Players.LocalPlayer.PlayerGui:FindFirstChild("MilkGUI")
+if exists then
+    exists:Destroy()
+end
+
 local gui = Instance.new("ScreenGui")
 gui.Name = "MilkGUI"
 gui.ResetOnSpawn = false
@@ -608,7 +613,6 @@ end
 local moduleData = {
     {name = "ESP", color = Color3.fromRGB(255, 200, 120)},
     {name = "Aimbot", color = Color3.fromRGB(120, 255, 138)},
-    {name = "Triggerbot", color = Color3.fromRGB(120, 235, 255)},
     {name = "Hitbox Expander", color = Color3.fromRGB(255, 224, 120)},
     {name = "Inf Jump", color = Color3.fromRGB(255, 120, 200)},
     {name = "Speed", color = Color3.fromRGB(120, 180, 255)},
