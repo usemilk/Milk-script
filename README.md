@@ -4,7 +4,6 @@
 
 # Thanks For Using Milk! 
 
-<hr>
 
 <h4>Designers</h4>
 
@@ -20,8 +19,8 @@ Murder vs Sheriff Duels,
 
 **Usage**
 
-1. Use an executor of your choice
-2. Execute this loadstring `___`
-
+ Use an executor of your choice 
  
+ Execute this loadstring `___`
+
  <hr>
