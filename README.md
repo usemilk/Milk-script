@@ -8,13 +8,13 @@
 
 <h4>Designers</h4>
 
-Left, Soggy, and Joshy
+Leftpapi, Soggy, and Joshy
 
 <hr>
 
 **Games**
 
-M. vs S., 
+Murder vs Sheriff Duels, 
 
 <hr>
 
