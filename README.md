@@ -1,4 +1,6 @@
-<img src="https://github.com/user-attachments/assets/94596714-42b6-47be-ba86-cb4add99624c" alt="Milk" width="200"/>
+
+<img src="https://github.com/user-attachments/assets/1a68f99d-35d0-41c7-a45c-d9d3501f4dc2" alt="Milk" width="300" style="border-radius: 12px;"/>
+
 
 # Thanks For Using Milk! 
 
