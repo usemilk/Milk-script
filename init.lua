@@ -183,10 +183,14 @@ dividerGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 150, 255))
 })
 
+local scrollPaddingTop = 120 * scaleFactor
+local scrollPaddingBottom = 20 * scaleFactor
+local scrollPaddingSides = 20 * scaleFactor
+
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Name = "ScrollFrame"
-scrollFrame.Position = UDim2.new(0, 20 * scaleFactor, 0, 125 * scaleFactor)
-scrollFrame.Size = UDim2.new(1, -40 * scaleFactor, 0, (mainFrameHeight - 175) * scaleFactor) 
+scrollFrame.Position = UDim2.new(0, scrollPaddingSides, 0, scrollPaddingTop)
+scrollFrame.Size = UDim2.new(1, -scrollPaddingSides * 2, 0, mainFrameHeight * scaleFactor - scrollPaddingTop - scrollPaddingBottom)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.ScrollBarThickness = 8 * scaleFactor
 scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 150, 255)
