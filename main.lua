@@ -31,22 +31,6 @@ local function isEnemy(player)
 	return player ~= LocalPlayer and player.Team ~= LocalPlayer.Team
 end
 
-local function expandHitbox(char)
-	local hrp = char:FindFirstChild("HumanoidRootPart")
-	if hrp then
-		hrp.Size = HITBOX_SIZE
-		hrp.CanCollide = false
-	end
-end
-
-local function resetHitbox(char)
-	local hrp = char:FindFirstChild("HumanoidRootPart")
-	if hrp then
-		hrp.Size = DEFAULT_HITBOX_SIZE
-		hrp.CanCollide = false
-	end
-end
-
 local function applySpeed()
 	local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 	if hum then
@@ -89,7 +73,8 @@ local function setupHighlightForPlayer(plr)
 
 		local highlight = Instance.new("Highlight")
 		highlight.Name = "ESP_Highlight"
-		highlight.FillTransparency = 0.5
+		highlight.FillTransparency = 0.25
+		highlight.OutlineTransparency = 0
 		highlight.Adornee = char
 		highlight.Parent = char
 		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
@@ -101,9 +86,6 @@ local function setupHighlightForPlayer(plr)
 			highlight.FillColor = Color3.fromRGB(255, 0, 0)
 			highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
 		end
-
-		highlight.FillTransparency = 0.25
-		highlight.OutlineTransparency = 0
 
 		highlights[plr.UserId] = highlight
 
@@ -132,10 +114,6 @@ local function handleCharacter(plr)
 	if plr == LocalPlayer then return end
 	plr.CharacterAdded:Connect(function(char)
 		char:WaitForChild("HumanoidRootPart")
-		if hitboxEnabled then
-			task.wait(0.2)
-			expandHitbox(char)
-		end
 		setupHighlightForPlayer(plr)
 	end)
 end
@@ -151,12 +129,31 @@ end)
 
 moduleHolder["Hitbox Expander"].Activated:Connect(function()
 	hitboxEnabled = not hitboxEnabled
-	for _, plr in ipairs(Players:GetPlayers()) do
-		if plr ~= LocalPlayer and plr.Character then
-			if hitboxEnabled then
-				expandHitbox(plr.Character)
-			else
-				resetHitbox(plr.Character)
+end)
+
+local size = 50
+local color = BrickColor.new("Really blue")
+
+RunService.RenderStepped:Connect(function()
+	if hitboxEnabled then
+		for _, player in pairs(Players:GetPlayers()) do
+			if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+				local hrp = player.Character.HumanoidRootPart
+				hrp.Size = Vector3.new(size, size, size)
+				hrp.Transparency = 0.7
+				hrp.BrickColor = color
+				hrp.Material = Enum.Material.Neon
+				hrp.CanCollide = false
+			end
+		end
+	else
+		for _, player in pairs(Players:GetPlayers()) do
+			if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+				local hrp = player.Character.HumanoidRootPart
+				hrp.Size = DEFAULT_HITBOX_SIZE
+				hrp.Transparency = 0
+				hrp.BrickColor = BrickColor.new("Medium stone grey")
+				hrp.Material = Enum.Material.Plastic
 			end
 		end
 	end
