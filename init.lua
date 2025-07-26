@@ -537,11 +537,9 @@ local function createModuleButton(data)
 
     local slider
     if data.name == "Speed" then
-        slider = createSlider(button, 1, 28, 16, data.color, "Walking Speed")
+        slider = createSlider(button, 1, 100, 16, data.color, "Walking Speed")
     elseif data.name == "FOV" then
         slider = createSlider(button, 1, 100, 70, data.color, "Field of View")
-    elseif data.name == "Inf Jump" then
-        slider = createSlider(button, 1, 150, 50, data.color, "Jump Power")
     end
 
     local isEnabled = false
@@ -810,7 +808,5 @@ spawn(function()
         end
     end)
 end)
-
--- Soggy, Joshy, and Left made this AMAZING ui
 
 return gui
