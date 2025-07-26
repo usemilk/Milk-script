@@ -23,7 +23,7 @@ local defaultWalkSpeed = 16
 local defaultFOV = 70
 local defaultJumpPower = 50
 
-local maxAimDistance = 250
+local maxAimDistance = 1000
 local aimSmoothness = 0.08
 local predictionStrength = 1.2
 local headPriority = true
@@ -241,11 +241,8 @@ local function getClosestTarget()
 							targetPos = targetPos + (velocity * predictionStrength * timeToTarget)
 						end
 						
-						local raycast = workspace:Raycast(localHRP.Position, (targetPos - localHRP.Position).Unit * distance)
-						if not raycast or raycast.Instance:IsDescendantOf(plr.Character) then
-							shortestDistance = distance
-							closestTarget = {position = targetPos, part = targetPart, player = plr}
-						end
+						shortestDistance = distance
+						closestTarget = {position = targetPos, part = targetPart, player = plr}
 					end
 				end
 			end
