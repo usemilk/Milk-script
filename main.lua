@@ -255,7 +255,7 @@ RunService.RenderStepped:Connect(function()
 	if not aimbotEnabled then return end
 	
 	local target = getClosestTarget()
-	if target and target ~= LocalPlayer and target.Team ~= "" then
+	if target and target ~= LocalPlayer  then
 		local cameraPos = Camera.CFrame.Position
 		local distance = (target.position - cameraPos).Magnitude
 		
@@ -266,11 +266,9 @@ RunService.RenderStepped:Connect(function()
 			dynamicSmoothness = dynamicSmoothness * 0.6
 		end
 
-		if distance <= maxAimDistance then
+		if distance <= maxAimDistance and target.Team ~= "" and target.Team ~= LocalPlayer.Team then
 			local targetCFrame = CFrame.new(cameraPos, target.position)
 			Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, dynamicSmoothness)
 		end
 	end
 end)
-
--- {{ Dont you fucking dare to skid this }} --
