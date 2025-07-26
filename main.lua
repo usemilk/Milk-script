@@ -4,7 +4,7 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer, Mouse = Players.LocalPlayer, Players.LocalPlayer:GetMouse()
 local moduleHolder = ui.MainFrame.ScrollFrame.ModuleHolder
 
-local espEnabled, aimbotEnabled, hitboxEnabled, triggerbotEnabled = false, false, false, false
+local espEnabled, aimbotEnabled, hitboxEnabled = false, false, false
 local HITBOX_SIZE, DEFAULT_HITBOX_SIZE = Vector3.new(10, 10, 10), Vector3.new(2, 2, 1)
 local highlights = {}
 
@@ -19,8 +19,6 @@ local speedEnabled = false
 local infJumpButton = moduleHolder["Inf Jump"]
 local infJumpEnabled = false
 
-local triggerbotButton = moduleHolder["Trigger Bot"]
-
 local defaultWalkSpeed = 16
 local defaultFOV = 70
 local defaultJumpPower = 50
@@ -31,7 +29,7 @@ local predictionStrength = 0.8
 local headPriority = true
 
 local function isEnemy(player)
-	return player ~= LocalPlayer and player.Team ~= LocalPlayer.Team and (player.Team.Name == "Team1" or player.Team.Name == "Team2")
+	return player ~= LocalPlayer and player.Team ~= LocalPlayer.Team
 end
 
 local function applySpeed()
@@ -204,62 +202,6 @@ end)
 infJumpButton.Activated:Connect(function()
 	infJumpEnabled = not infJumpEnabled
 	applyJumpPower()
-end)
-
-triggerbotButton.Activated:Connect(function()
-	triggerbotEnabled = not triggerbotEnabled
-end)
-
-local function canKillTarget(target)
-	if not target or not target.Character then return false end
-	local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
-	if not humanoid then return false end
-	
-	local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
-	if not tool then return false end
-	
-	local damage = 34
-	if tool.Name:lower():find("head") then
-		damage = 68
-	end
-	
-	return humanoid.Health <= damage
-end
-
-local function getTargetUnderCrosshair()
-	local camera = workspace.CurrentCamera
-	local screenCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-	local ray = camera:ScreenPointToRay(screenCenter.X, screenCenter.Y)
-	
-	local raycastParams = RaycastParams.new()
-	raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-	raycastParams.FilterDescendantsInstances = {LocalPlayer.Character}
-	
-	local result = workspace:Raycast(ray.Origin, ray.Direction * 1000, raycastParams)
-	
-	if result and result.Instance then
-		local character = result.Instance.Parent
-		local player = Players:GetPlayerFromCharacter(character)
-		if player and isEnemy(player) then
-			return player
-		end
-	end
-	
-	return nil
-end
-
-RunService.Heartbeat:Connect(function()
-	if not triggerbotEnabled then return end
-	
-	local target = getTargetUnderCrosshair()
-	if target and canKillTarget(target) then
-		local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
-		if tool and tool:FindFirstChild("ShootGun") then
-			tool.ShootGun:FireServer()
-		else
-			mouse1click()
-		end
-	end
 end)
 
 UserInputService.JumpRequest:Connect(function()
