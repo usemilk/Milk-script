@@ -32,6 +32,33 @@ local function isEnemy(player)
 	return player ~= LocalPlayer and player.Team ~= LocalPlayer.Team
 end
 
+local function isValidPlayer(player)
+	if not player or player == LocalPlayer then return false end
+	
+	local character = player.Character
+	if not character then return false end
+	
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then return false end
+	
+	local hrp = character:FindFirstChild("HumanoidRootPart")
+	if not hrp then return false end
+	
+	if hrp.CFrame.Position.Y < -50 then return false end
+	
+	local raycast = workspace:Raycast(hrp.Position, Vector3.new(0, -1000, 0))
+	if raycast and raycast.Instance then
+		local hitPart = raycast.Instance
+		if hitPart.Name:lower():find("spawn") or 
+		   hitPart.Parent.Name:lower():find("spawn") or
+		   hitPart:GetAttribute("SpawnPoint") then
+			return false
+		end
+	end
+	
+	return true
+end
+
 local function applySpeed()
 	local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 	if hum then
@@ -224,26 +251,24 @@ local function getClosestTarget()
 	if not localHRP then return nil end
 	
 	for _, plr in ipairs(Players:GetPlayers()) do
-		if isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-			local hum = plr.Character:FindFirstChildOfClass("Humanoid")
-			if hum and hum.Health > 0 then
-				local hrp = plr.Character.HumanoidRootPart
-				local distance = (hrp.Position - localHRP.Position).Magnitude
-				
-				if distance <= maxAimDistance and distance < shortestDistance then
-					local targetPart = headPriority and plr.Character:FindFirstChild("Head") or hrp
-					if targetPart then
-						local targetPos = targetPart.Position
-						
-						if hum.MoveDirection.Magnitude > 0 then
-							local velocity = hrp.Velocity
-							local timeToTarget = distance / 500
-							targetPos = targetPos + (velocity * predictionStrength * timeToTarget)
-						end
-						
-						shortestDistance = distance
-						closestTarget = {position = targetPos, part = targetPart, player = plr}
+		if isEnemy(plr) and isValidPlayer(plr) then
+			local hrp = plr.Character.HumanoidRootPart
+			local distance = (hrp.Position - localHRP.Position).Magnitude
+			
+			if distance <= maxAimDistance and distance < shortestDistance then
+				local targetPart = headPriority and plr.Character:FindFirstChild("Head") or hrp
+				if targetPart then
+					local targetPos = targetPart.Position
+					
+					local hum = plr.Character:FindFirstChildOfClass("Humanoid")
+					if hum and hum.MoveDirection.Magnitude > 0 then
+						local velocity = hrp.Velocity
+						local timeToTarget = distance / 500
+						targetPos = targetPos + (velocity * predictionStrength * timeToTarget)
 					end
+					
+					shortestDistance = distance
+					closestTarget = {position = targetPos, part = targetPart, player = plr}
 				end
 			end
 		end
