@@ -7,7 +7,7 @@ local UIS = game:GetService("UserInputService")
 local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
 local scaleFactor = isMobile and 0.6 or 1
 local mainFrameWidth = isMobile and 260 or 400
-local mainFrameHeight = isMobile and 350 or 500
+local mainFrameHeight = isMobile and 390 or 580
 local buttonWidth = isMobile and 220 or 350
 
 local exists = Players.LocalPlayer.PlayerGui:FindFirstChild("MilkGUI")
@@ -66,6 +66,7 @@ mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Draggable = false
 mainFrame.Visible = true
+mainFrame.ClipsDescendants = true
 mainFrame.Parent = gui
 
 local mainCorner = Instance.new("UICorner", mainFrame)
@@ -112,6 +113,7 @@ local titleFrame = Instance.new("Frame")
 titleFrame.Name = "TitleFrame"
 titleFrame.Size = UDim2.new(1, 0, 0, 80 * scaleFactor)
 titleFrame.BackgroundTransparency = 1
+titleFrame.ZIndex = 10
 titleFrame.Parent = mainFrame
 
 local titleContainer = Instance.new("Frame")
@@ -165,6 +167,7 @@ subtitle.BackgroundTransparency = 1
 subtitle.TextColor3 = Color3.fromRGB(180, 200, 240)
 subtitle.Font = Enum.Font.Gotham
 subtitle.TextSize = 12 * scaleFactor
+subtitle.ZIndex = 10
 subtitle.Parent = mainFrame
 
 local divider = Instance.new("Frame")
@@ -174,6 +177,7 @@ divider.Position = UDim2.new(0.075, 0, 0, 105 * scaleFactor)
 divider.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
 divider.BackgroundTransparency = 0.5
 divider.BorderSizePixel = 0
+divider.ZIndex = 10
 divider.Parent = mainFrame
 
 local dividerGradient = Instance.new("UIGradient", divider)
@@ -190,7 +194,7 @@ local scrollPaddingSides = 20 * scaleFactor
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Name = "ScrollFrame"
 scrollFrame.Position = UDim2.new(0, scrollPaddingSides, 0, scrollPaddingTop)
-scrollFrame.Size = UDim2.new(1, -scrollPaddingSides * 2, 0, mainFrameHeight * scaleFactor - scrollPaddingTop - scrollPaddingBottom)
+scrollFrame.Size = UDim2.new(1, -scrollPaddingSides * 2, 1, -scrollPaddingTop - scrollPaddingBottom)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.ScrollBarThickness = 8 * scaleFactor
 scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 150, 255)
@@ -198,6 +202,7 @@ scrollFrame.ScrollBarImageTransparency = 0.3
 scrollFrame.BorderSizePixel = 0
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 scrollFrame.ClipsDescendants = true
+scrollFrame.ZIndex = 5
 scrollFrame.Parent = mainFrame
 
 local scrollCorner = Instance.new("UICorner", scrollFrame)
@@ -223,53 +228,57 @@ end)
 local function createSlider(parent, minValue, maxValue, defaultValue, color, title)
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Name = "SliderFrame"
-    sliderFrame.Size = UDim2.new(1, 0, 0, 80 * scaleFactor)
-    sliderFrame.Position = UDim2.new(0, 0, 0, 50 * scaleFactor) 
+    sliderFrame.Size = UDim2.new(1, 0, 0, 60 * scaleFactor)
+    sliderFrame.Position = UDim2.new(0, 0, 0, 40 * scaleFactor) 
     sliderFrame.BackgroundTransparency = 1
     sliderFrame.Visible = false
     sliderFrame.ClipsDescendants = true 
+    sliderFrame.ZIndex = 5
     sliderFrame.Parent = parent
 
     local sliderTitle = Instance.new("TextLabel")
     sliderTitle.Name = "SliderTitle"
-    sliderTitle.Size = UDim2.new(1, -40 * scaleFactor, 0, 20 * scaleFactor)
-    sliderTitle.Position = UDim2.new(0, 20 * scaleFactor, 0, 5 * scaleFactor)
+    sliderTitle.Size = UDim2.new(1, -40 * scaleFactor, 0, 18 * scaleFactor)
+    sliderTitle.Position = UDim2.new(0, 20 * scaleFactor, 0, 2 * scaleFactor)
     sliderTitle.BackgroundTransparency = 1
     sliderTitle.Text = title or "Value"
     sliderTitle.TextColor3 = Color3.fromRGB(220, 220, 240)
     sliderTitle.Font = Enum.Font.GothamSemibold
-    sliderTitle.TextSize = 13 * scaleFactor
+    sliderTitle.TextSize = 12 * scaleFactor
     sliderTitle.TextXAlignment = Enum.TextXAlignment.Left
+    sliderTitle.ZIndex = 6
     sliderTitle.Parent = sliderFrame
 
     local valueDisplay = Instance.new("TextLabel")
     valueDisplay.Name = "ValueDisplay"
-    valueDisplay.Size = UDim2.new(0, 60 * scaleFactor, 0, 20 * scaleFactor)
-    valueDisplay.Position = UDim2.new(1, -80 * scaleFactor, 0, 5 * scaleFactor)
+    valueDisplay.Size = UDim2.new(0, 50 * scaleFactor, 0, 18 * scaleFactor)
+    valueDisplay.Position = UDim2.new(1, -70 * scaleFactor, 0, 2 * scaleFactor)
     valueDisplay.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
     valueDisplay.BackgroundTransparency = 0.2
     valueDisplay.BorderSizePixel = 0
     valueDisplay.Text = tostring(defaultValue)
     valueDisplay.TextColor3 = color
     valueDisplay.Font = Enum.Font.GothamBold
-    valueDisplay.TextSize = 12 * scaleFactor
+    valueDisplay.TextSize = 11 * scaleFactor
     valueDisplay.TextXAlignment = Enum.TextXAlignment.Center
+    valueDisplay.ZIndex = 6
     valueDisplay.Parent = sliderFrame
 
     local valueCorner = Instance.new("UICorner", valueDisplay)
-    valueCorner.CornerRadius = UDim.new(0, 6 * scaleFactor)
+    valueCorner.CornerRadius = UDim.new(0, 5 * scaleFactor)
 
     local valueStroke = Instance.new("UIStroke", valueDisplay)
     valueStroke.Color = color
-    valueStroke.Thickness = 1.5 * scaleFactor
-    valueStroke.Transparency = 0.5
+    valueStroke.Thickness = 1 * scaleFactor
+    valueStroke.Transparency = 0.6
 
     local sliderBackground = Instance.new("Frame")
     sliderBackground.Name = "Background"
-    sliderBackground.Size = UDim2.new(1, -40 * scaleFactor, 0, 8 * scaleFactor)
-    sliderBackground.Position = UDim2.new(0, 20 * scaleFactor, 0, 35 * scaleFactor) 
+    sliderBackground.Size = UDim2.new(1, -40 * scaleFactor, 0, 6 * scaleFactor)
+    sliderBackground.Position = UDim2.new(0, 20 * scaleFactor, 0, 25 * scaleFactor) 
     sliderBackground.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
     sliderBackground.BorderSizePixel = 0
+    sliderBackground.ZIndex = 6
     sliderBackground.Parent = sliderFrame
 
     local sliderCorner = Instance.new("UICorner", sliderBackground)
@@ -285,6 +294,7 @@ local function createSlider(parent, minValue, maxValue, defaultValue, color, tit
     sliderFill.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 1, 0)
     sliderFill.BackgroundColor3 = color
     sliderFill.BorderSizePixel = 0
+    sliderFill.ZIndex = 7
     sliderFill.Parent = sliderBackground
 
     local fillCorner = Instance.new("UICorner", sliderFill)
@@ -292,12 +302,13 @@ local function createSlider(parent, minValue, maxValue, defaultValue, color, tit
 
     local sliderButton = Instance.new("TextButton")
     sliderButton.Name = "Button"
-    sliderButton.Size = UDim2.new(0, 20 * scaleFactor, 0, 20 * scaleFactor)
-    sliderButton.Position = UDim2.new((defaultValue - minValue) / (maxValue - minValue), -10 * scaleFactor, 0.5, -10 * scaleFactor)
+    sliderButton.Size = UDim2.new(0, 16 * scaleFactor, 0, 16 * scaleFactor)
+    sliderButton.Position = UDim2.new((defaultValue - minValue) / (maxValue - minValue), -8 * scaleFactor, 0.5, -8 * scaleFactor)
     sliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     sliderButton.AutoButtonColor = false
     sliderButton.Text = ""
     sliderButton.BorderSizePixel = 0
+    sliderButton.ZIndex = 8
     sliderButton.Parent = sliderBackground
 
     local buttonCorner = Instance.new("UICorner", sliderButton)
@@ -305,13 +316,13 @@ local function createSlider(parent, minValue, maxValue, defaultValue, color, tit
 
     local buttonStroke = Instance.new("UIStroke", sliderButton)
     buttonStroke.Color = color
-    buttonStroke.Thickness = 3 * scaleFactor
-    buttonStroke.Transparency = 0.2
+    buttonStroke.Thickness = 2 * scaleFactor
+    buttonStroke.Transparency = 0.3
 
     local buttonGlow = Instance.new("Frame")
     buttonGlow.Name = "ButtonGlow"
-    buttonGlow.Size = UDim2.new(0, 26 * scaleFactor, 0, 26 * scaleFactor)
-    buttonGlow.Position = UDim2.new(0.5, -13 * scaleFactor, 0.5, -13 * scaleFactor)
+    buttonGlow.Size = UDim2.new(0, 20 * scaleFactor, 0, 20 * scaleFactor)
+    buttonGlow.Position = UDim2.new(0.5, -10 * scaleFactor, 0.5, -10 * scaleFactor)
     buttonGlow.BackgroundColor3 = color
     buttonGlow.BackgroundTransparency = 0.8
     buttonGlow.BorderSizePixel = 0
@@ -327,14 +338,14 @@ local function createSlider(parent, minValue, maxValue, defaultValue, color, tit
     local function startDragging()
         dragging = sliderButton
         TweenService:Create(buttonGlow, TweenInfo.new(0.1), {BackgroundTransparency = 0.6}):Play()
-        TweenService:Create(sliderButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 24 * scaleFactor, 0, 24 * scaleFactor)}):Play()
+        TweenService:Create(sliderButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 18 * scaleFactor, 0, 18 * scaleFactor)}):Play()
     end
 
     local function stopDragging()
         if dragging == sliderButton then
             dragging = false
             TweenService:Create(buttonGlow, TweenInfo.new(0.2), {BackgroundTransparency = 0.8}):Play()
-            TweenService:Create(sliderButton, TweenInfo.new(0.2), {Size = UDim2.new(0, 20 * scaleFactor, 0, 20 * scaleFactor)}):Play()
+            TweenService:Create(sliderButton, TweenInfo.new(0.2), {Size = UDim2.new(0, 16 * scaleFactor, 0, 16 * scaleFactor)}):Play()
         end
     end
 
@@ -359,7 +370,7 @@ local function createSlider(parent, minValue, maxValue, defaultValue, color, tit
 
     sliderButton.MouseLeave:Connect(function()
         if dragging ~= sliderButton then
-            TweenService:Create(buttonStroke, TweenInfo.new(0.2), {Transparency = 0.2}):Play()
+            TweenService:Create(buttonStroke, TweenInfo.new(0.2), {Transparency = 0.3}):Play()
             TweenService:Create(buttonGlow, TweenInfo.new(0.2), {BackgroundTransparency = 0.8}):Play()
         end
     end)
@@ -373,7 +384,7 @@ local function createSlider(parent, minValue, maxValue, defaultValue, color, tit
             valueDisplay.Text = tostring(value)
             
             TweenService:Create(sliderFill, TweenInfo.new(0.1), {Size = UDim2.new(relativeX, 0, 1, 0)}):Play()
-            TweenService:Create(sliderButton, TweenInfo.new(0.1), {Position = UDim2.new(relativeX, -10 * scaleFactor, 0.5, -10 * scaleFactor)}):Play()
+            TweenService:Create(sliderButton, TweenInfo.new(0.1), {Position = UDim2.new(relativeX, -8 * scaleFactor, 0.5, -8 * scaleFactor)}):Play()
             
             TweenService:Create(valueDisplay, TweenInfo.new(0.1), {BackgroundTransparency = 0}):Play()
             wait(0.1)
@@ -571,7 +582,7 @@ local function createModuleButton(data)
             
             if slider then
                 slider.Visible = true
-                TweenService:Create(button, tweenInfo, {Size = UDim2.new(0, buttonWidth, 0, 110 * scaleFactor)}):Play() 
+                TweenService:Create(button, tweenInfo, {Size = UDim2.new(0, buttonWidth, 0, 85 * scaleFactor)}):Play() 
                 spawn(function()
                     wait(0.35) 
                     scrollFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 15 * scaleFactor)
@@ -800,6 +811,6 @@ spawn(function()
     end)
 end)
 
---{{ this was made by Joshy, Soggy and Left! }}--
+-- Soggy, Joshy, and Left made this AMAZING ui
 
 return gui
