@@ -160,7 +160,7 @@ title.Parent = titleContainer
 
 local subtitle = Instance.new("TextLabel")
 subtitle.Name = "Subtitle"
-subtitle.Text = "Premium Gaming Experience • v2.0"
+subtitle.Text = "Discord.gg/usemilk"
 subtitle.Size = UDim2.new(1, 0, 0, 20 * scaleFactor)
 subtitle.Position = UDim2.new(0, 0, 0, 80 * scaleFactor)
 subtitle.BackgroundTransparency = 1
