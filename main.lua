@@ -17,7 +17,6 @@ local speedSliderDisplay = speedButton.SliderFrame.ValueDisplay
 local speedEnabled = false
 
 local infJumpButton = moduleHolder["Inf Jump"]
-local infJumpSliderDisplay = infJumpButton.SliderFrame.ValueDisplay
 local infJumpEnabled = false
 
 local defaultWalkSpeed = 16
@@ -43,10 +42,7 @@ end
 local function applyJumpPower()
 	local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 	if hum then
-		local jp = tonumber(infJumpSliderDisplay.Text)
-		if jp then
-			hum.JumpPower = infJumpEnabled and jp or defaultJumpPower
-		end
+		hum.JumpPower = infJumpEnabled and 50 or defaultJumpPower
 	end
 end
 
@@ -206,12 +202,6 @@ end)
 infJumpButton.Activated:Connect(function()
 	infJumpEnabled = not infJumpEnabled
 	applyJumpPower()
-end)
-
-infJumpSliderDisplay:GetPropertyChangedSignal("Text"):Connect(function()
-	if infJumpEnabled then
-		applyJumpPower()
-	end
 end)
 
 UserInputService.JumpRequest:Connect(function()
