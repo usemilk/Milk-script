@@ -29,7 +29,11 @@ local predictionStrength = 1.2
 local headPriority = true
 
 local function isEnemy(player)
-	return player ~= LocalPlayer and player.Team ~= LocalPlayer.Team
+	if player.Team ~= LocalPlayer.Team and player ~= LocalPlayer and player.Character.Humanoid.Health > 0 then
+		return true
+	else
+		return false
+	end
 end
 
 local function applySpeed()
@@ -63,12 +67,10 @@ local function setupHighlightForPlayer(plr)
 		if not espEnabled then return end
 		local char = plr.Character
 		if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-
 		if highlights[plr.UserId] then
 			highlights[plr.UserId]:Destroy()
 			highlights[plr.UserId] = nil
 		end
-
 		local highlight = Instance.new("Highlight")
 		highlight.Name = "ESP_Highlight"
 		highlight.FillTransparency = 0.25
@@ -76,7 +78,6 @@ local function setupHighlightForPlayer(plr)
 		highlight.Adornee = char
 		highlight.Parent = char
 		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-
 		if plr.Team == LocalPlayer.Team then
 			highlight.FillColor = Color3.fromRGB(0, 255, 0)
 			highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
@@ -84,9 +85,7 @@ local function setupHighlightForPlayer(plr)
 			highlight.FillColor = Color3.fromRGB(255, 0, 0)
 			highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
 		end
-
 		highlights[plr.UserId] = highlight
-
 		local hum = char:FindFirstChildOfClass("Humanoid")
 		if hum then
 			hum.Died:Once(function()
@@ -97,11 +96,9 @@ local function setupHighlightForPlayer(plr)
 			end)
 		end
 	end
-
 	if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
 		refreshESP()
 	end
-
 	plr.CharacterAdded:Connect(function(char)
 		char:WaitForChild("HumanoidRootPart", 3)
 		refreshESP()
@@ -217,30 +214,31 @@ end)
 local function getClosestTarget()
 	local closestTarget = nil
 	local shortestDistance = maxAimDistance
-	
 	local localChar = LocalPlayer.Character
 	local localHRP = localChar and localChar:FindFirstChild("HumanoidRootPart")
-	
 	if not localHRP then return nil end
-	
 	for _, plr in ipairs(Players:GetPlayers()) do
-		if isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+		local isEnemyCheck = isEnemy(plr)
+		if isEnemyCheck == true and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
 			local hum = plr.Character:FindFirstChildOfClass("Humanoid")
 			if hum and hum.Health > 0 then
 				local hrp = plr.Character.HumanoidRootPart
 				local distance = (hrp.Position - localHRP.Position).Magnitude
-				
 				if distance <= maxAimDistance and distance < shortestDistance then
 					local targetPart = headPriority and plr.Character:FindFirstChild("Head") or hrp
 					if targetPart then
 						local targetPos = targetPart.Position
-						
 						if hum.MoveDirection.Magnitude > 0 then
 							local velocity = hrp.Velocity
+							local clampedVelocity = Vector3.new(
+								math.clamp(velocity.X, -50, 50),
+								math.clamp(velocity.Y, -50, 50),
+								math.clamp(velocity.Z, -50, 50)
+							)
 							local timeToTarget = distance / 500
-							targetPos = targetPos + (velocity * predictionStrength * timeToTarget)
+							timeToTarget = math.clamp(timeToTarget, 0.05, 1.5)
+							targetPos = targetPos + (clampedVelocity * predictionStrength * timeToTarget)
 						end
-						
 						shortestDistance = distance
 						closestTarget = {position = targetPos, part = targetPart, player = plr}
 					end
@@ -253,20 +251,18 @@ end
 
 RunService.RenderStepped:Connect(function()
 	if not aimbotEnabled then return end
-	
 	local target = getClosestTarget()
-	if target and target ~= LocalPlayer  then
+	if target and target.part then
 		local cameraPos = Camera.CFrame.Position
 		local distance = (target.position - cameraPos).Magnitude
-		
 		local dynamicSmoothness = aimSmoothness
 		if distance < 75 then
 			dynamicSmoothness = dynamicSmoothness * 1.8
 		elseif distance > 150 then
 			dynamicSmoothness = dynamicSmoothness * 0.6
 		end
-
-		if distance <= maxAimDistance and target.Team ~= "" and target.Team ~= LocalPlayer.Team then
+		dynamicSmoothness = math.clamp(dynamicSmoothness, 0.05, 0.25)
+		if distance <= maxAimDistance and target.player.Team ~= LocalPlayer.Team then
 			local targetCFrame = CFrame.new(cameraPos, target.position)
 			Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, dynamicSmoothness)
 		end
