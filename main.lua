@@ -65,10 +65,12 @@ local function setupHighlightForPlayer(plr)
 		if not espEnabled then return end
 		local char = plr.Character
 		if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+
 		if highlights[plr.UserId] then
 			highlights[plr.UserId]:Destroy()
 			highlights[plr.UserId] = nil
 		end
+
 		local highlight = Instance.new("Highlight")
 		highlight.Name = "ESP_Highlight"
 		highlight.FillTransparency = 0.25
@@ -76,6 +78,7 @@ local function setupHighlightForPlayer(plr)
 		highlight.Adornee = char
 		highlight.Parent = char
 		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+
 		if plr.Team == LocalPlayer.Team then
 			highlight.FillColor = Color3.fromRGB(0, 255, 0)
 			highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
@@ -83,7 +86,9 @@ local function setupHighlightForPlayer(plr)
 			highlight.FillColor = Color3.fromRGB(255, 0, 0)
 			highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
 		end
+
 		highlights[plr.UserId] = highlight
+
 		local hum = char:FindFirstChildOfClass("Humanoid")
 		if hum then
 			hum.Died:Once(function()
@@ -94,9 +99,11 @@ local function setupHighlightForPlayer(plr)
 			end)
 		end
 	end
+
 	if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
 		refreshESP()
 	end
+
 	plr.CharacterAdded:Connect(function(char)
 		char:WaitForChild("HumanoidRootPart", 3)
 		refreshESP()
@@ -133,19 +140,10 @@ RunService.RenderStepped:Connect(function()
 			if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
 				local hrp = player.Character.HumanoidRootPart
 				hrp.Size = Vector3.new(size, size, size)
-				hrp.Transparency = 0.6
+				hrp.Transparency = 0.7
 				hrp.BrickColor = color
 				hrp.Material = Enum.Material.Neon
 				hrp.CanCollide = false
-				if not hrp:FindFirstChild("DimOutline") then
-					local outline = Instance.new("SelectionBox")
-					outline.Name = "DimOutline"
-					outline.Adornee = hrp
-					outline.LineThickness = 0.04
-					outline.Color3 = Color3.fromRGB(100, 100, 255)
-					outline.Transparency = 0.7
-					outline.Parent = hrp
-				end
 			end
 		end
 	else
@@ -156,8 +154,6 @@ RunService.RenderStepped:Connect(function()
 				hrp.Transparency = 0
 				hrp.BrickColor = BrickColor.new("Medium stone grey")
 				hrp.Material = Enum.Material.Plastic
-				local existing = hrp:FindFirstChild("DimOutline")
-				if existing then existing:Destroy() end
 			end
 		end
 	end
@@ -231,9 +227,12 @@ local function getClosestTarget()
 	local shortestDist = fovRadius
 	local maxDistance = 150
 	local maxYDifference = 40
+
 	local localChar = LocalPlayer.Character
 	local localHRP = localChar and localChar:FindFirstChild("HumanoidRootPart")
+
 	if not localHRP then return nil end
+
 	for _, plr in ipairs(Players:GetPlayers()) do
 		if isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
 			local hum = plr.Character:FindFirstChildOfClass("Humanoid")
@@ -241,10 +240,12 @@ local function getClosestTarget()
 				local hrp = plr.Character.HumanoidRootPart
 				local distance = (hrp.Position - localHRP.Position).Magnitude
 				local yDifference = math.abs(hrp.Position.Y - localHRP.Position.Y)
+
 				if distance <= maxDistance and yDifference <= maxYDifference then
 					local screenPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
 					local direction = (hrp.Position - Camera.CFrame.Position).Unit
 					local facing = Camera.CFrame.LookVector:Dot(direction) > 0.5
+
 					if onScreen and facing then
 						local mouseDist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(screenPos.X, screenPos.Y)).Magnitude
 						if mouseDist < shortestDist then
@@ -256,6 +257,7 @@ local function getClosestTarget()
 			end
 		end
 	end
+
 	return closestTarget
 end
 
