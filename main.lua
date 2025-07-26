@@ -129,7 +129,7 @@ moduleHolder["Hitbox Expander"].Activated:Connect(function()
 	hitboxEnabled = not hitboxEnabled
 end)
 
-local size = 8
+local size = 20
 local color = BrickColor.new("Really blue")
 
 RunService.RenderStepped:Connect(function()
