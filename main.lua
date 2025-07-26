@@ -31,7 +31,7 @@ local predictionStrength = 0.8
 local headPriority = true
 
 local function isEnemy(player)
-	return player ~= LocalPlayer and player.Team ~= LocalPlayer.Team
+	return player ~= LocalPlayer and player.Team ~= LocalPlayer.Team and (player.Team.Name == "Team1" or player.Team.Name == "Team2")
 end
 
 local function applySpeed()
@@ -254,10 +254,8 @@ RunService.Heartbeat:Connect(function()
 	local target = getTargetUnderCrosshair()
 	if target and canKillTarget(target) then
 		local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
-		if tool and tool:FindFirstChild("RemoteEvent") then
-			tool.RemoteEvent:FireServer()
-		elseif tool and tool:FindFirstChild("Fire") then
-			tool.Fire:FireServer()
+		if tool and tool:FindFirstChild("ShootGun") then
+			tool.ShootGun:FireServer()
 		else
 			mouse1click()
 		end
