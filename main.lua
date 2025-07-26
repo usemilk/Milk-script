@@ -23,9 +23,9 @@ local defaultWalkSpeed = 16
 local defaultFOV = 70
 local defaultJumpPower = 50
 
-local fovRadius = 180
-local aimSmoothness = 0.12
-local predictionStrength = 0.8
+local maxAimDistance = 250
+local aimSmoothness = 0.08
+local predictionStrength = 1.2
 local headPriority = true
 
 local function isEnemy(player)
@@ -216,73 +216,61 @@ end)
 
 local function getClosestTarget()
 	local closestTarget = nil
-	local shortestDist = fovRadius
-	local maxDistance = 200
-	local maxYDifference = 50
-	local bestScore = math.huge
-
+	local shortestDistance = maxAimDistance
+	
 	local localChar = LocalPlayer.Character
 	local localHRP = localChar and localChar:FindFirstChild("HumanoidRootPart")
-
+	
 	if not localHRP then return nil end
-
+	
 	for _, plr in ipairs(Players:GetPlayers()) do
 		if isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
 			local hum = plr.Character:FindFirstChildOfClass("Humanoid")
 			if hum and hum.Health > 0 then
 				local hrp = plr.Character.HumanoidRootPart
 				local distance = (hrp.Position - localHRP.Position).Magnitude
-				local yDifference = math.abs(hrp.Position.Y - localHRP.Position.Y)
-
-				if distance <= maxDistance and yDifference <= maxYDifference then
-					local targetPos = hrp.Position
-					
-					if headPriority and plr.Character:FindFirstChild("Head") then
-						targetPos = plr.Character.Head.Position
-					end
-					
-					if hum.MoveDirection.Magnitude > 0 then
-						local velocity = hrp.Velocity
-						targetPos = targetPos + (velocity * predictionStrength * 0.1)
-					end
-
-					local screenPos, onScreen = Camera:WorldToViewportPoint(targetPos)
-					local direction = (targetPos - Camera.CFrame.Position).Unit
-					local facing = Camera.CFrame.LookVector:Dot(direction) > 0.3
-
-					if onScreen and facing then
-						local mouseDist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(screenPos.X, screenPos.Y)).Magnitude
-						local score = mouseDist + (distance * 0.1)
+				
+				if distance <= maxAimDistance and distance < shortestDistance then
+					local targetPart = headPriority and plr.Character:FindFirstChild("Head") or hrp
+					if targetPart then
+						local targetPos = targetPart.Position
 						
-						if score < bestScore then
-							bestScore = score
-							closestTarget = {position = targetPos, part = headPriority and plr.Character:FindFirstChild("Head") or hrp}
+						if hum.MoveDirection.Magnitude > 0 then
+							local velocity = hrp.Velocity
+							local timeToTarget = distance / 500
+							targetPos = targetPos + (velocity * predictionStrength * timeToTarget)
+						end
+						
+						local raycast = workspace:Raycast(localHRP.Position, (targetPos - localHRP.Position).Unit * distance)
+						if not raycast or raycast.Instance:IsDescendantOf(plr.Character) then
+							shortestDistance = distance
+							closestTarget = {position = targetPos, part = targetPart, player = plr}
 						end
 					end
 				end
 			end
 		end
 	end
-
+	
 	return closestTarget
 end
 
 RunService.RenderStepped:Connect(function()
 	if not aimbotEnabled then return end
-
+	
 	local target = getClosestTarget()
 	if target then
 		local cameraPos = Camera.CFrame.Position
-		local smoothFactor = aimSmoothness
-		
 		local distance = (target.position - cameraPos).Magnitude
-		if distance < 50 then
-			smoothFactor = smoothFactor * 1.4
-		elseif distance > 120 then
-			smoothFactor = smoothFactor * 0.7
+		
+		local dynamicSmoothness = aimSmoothness
+		if distance < 75 then
+			dynamicSmoothness = dynamicSmoothness * 1.8
+		elseif distance > 150 then
+			dynamicSmoothness = dynamicSmoothness * 0.6
 		end
 		
-		local newCFrame = CFrame.new(cameraPos, target.position)
-		Camera.CFrame = Camera.CFrame:Lerp(newCFrame, smoothFactor)
+		local targetCFrame = CFrame.new(cameraPos, target.position)
+		Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, dynamicSmoothness)
 	end
 end)
