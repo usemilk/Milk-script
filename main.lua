@@ -1,11 +1,11 @@
 local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/usemilk/Milk-script/main/init.lua"))()
 local Players, RunService, Camera = game:GetService("Players"), game:GetService("RunService"), workspace.CurrentCamera
 local UserInputService = game:GetService("UserInputService")
-local LocalPlayer, Mouse = Players.LocalPlayer, Players.LocalPlayer:GetMouse()
+local LocalPlayer = Players.LocalPlayer
 local moduleHolder = ui.MainFrame.ScrollFrame.ModuleHolder
 
 local espEnabled, aimbotEnabled, hitboxEnabled = false, false, false
-local HITBOX_SIZE, DEFAULT_HITBOX_SIZE = Vector3.new(10, 10, 10), Vector3.new(2, 2, 1)
+local DEFAULT_HITBOX_SIZE = Vector3.new(2, 2, 1)
 local highlights = {}
 
 local fovButton = moduleHolder.FOV
@@ -23,7 +23,7 @@ local defaultWalkSpeed = 16
 local defaultFOV = 70
 local defaultJumpPower = 50
 
-local maxAimDistance = 150
+local maxAimDistance = 125
 local aimSmoothness = 0.2
 local predictionStrength = 1.2
 local headPriority = true
@@ -129,7 +129,7 @@ moduleHolder["Hitbox Expander"].Activated:Connect(function()
 	hitboxEnabled = not hitboxEnabled
 end)
 
-local size = 20
+local size = 8
 local color = BrickColor.new("Really blue")
 
 RunService.RenderStepped:Connect(function()
@@ -255,7 +255,7 @@ RunService.RenderStepped:Connect(function()
 	if not aimbotEnabled then return end
 	
 	local target = getClosestTarget()
-	if target and target ~= LocalPlayer then
+	if target and target ~= LocalPlayer and target.Team ~= "" then
 		local cameraPos = Camera.CFrame.Position
 		local distance = (target.position - cameraPos).Magnitude
 		
@@ -272,3 +272,5 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
+-- {{ Dont you fucking dare to skid this }} --
