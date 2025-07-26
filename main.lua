@@ -1,4 +1,4 @@
-local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/usemilk/Milk-script/main/init.lua"))()
+local ui = loadstring(syn.request({Url = "https://raw.githubusercontent.com/usemilk/Milk-script/main/init.lua", Method = "GET"}).Body)()
 local Players, RunService, Camera = game:GetService("Players"), game:GetService("RunService"), workspace.CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local LocalPlayer, Mouse = Players.LocalPlayer, Players.LocalPlayer:GetMouse()
