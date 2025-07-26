@@ -23,7 +23,7 @@ local defaultWalkSpeed = 16
 local defaultFOV = 70
 local defaultJumpPower = 50
 
-local maxAimDistance = 125
+local maxAimDistance = 150
 local aimSmoothness = 0.2
 local predictionStrength = 1.2
 local headPriority = true
