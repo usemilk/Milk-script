@@ -1,4 +1,4 @@
-local ui = loadstring(syn.request({Url = "https://raw.githubusercontent.com/usemilk/Milk-script/main/init.lua", Method = "GET"}).Body)()
+local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/usemilk/Milk-script/main/init.lua"))()
 local Players, RunService, Camera = game:GetService("Players"), game:GetService("RunService"), workspace.CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local LocalPlayer, Mouse = Players.LocalPlayer, Players.LocalPlayer:GetMouse()
@@ -225,33 +225,22 @@ end)
 local function getClosestTarget()
 	local closestTarget = nil
 	local shortestDist = fovRadius
-	local maxDistance = 150
-	local maxYDifference = 40
-
-	local localChar = LocalPlayer.Character
-	local localHRP = localChar and localChar:FindFirstChild("HumanoidRootPart")
-
-	if not localHRP then return nil end
 
 	for _, plr in ipairs(Players:GetPlayers()) do
 		if isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
 			local hum = plr.Character:FindFirstChildOfClass("Humanoid")
 			if hum and hum.Health > 0 then
-				local hrp = plr.Character.HumanoidRootPart
-				local distance = (hrp.Position - localHRP.Position).Magnitude
-				local yDifference = math.abs(hrp.Position.Y - localHRP.Position.Y)
+				local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+				local screenPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
 
-				if distance <= maxDistance and yDifference <= maxYDifference then
-					local screenPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
-					local direction = (hrp.Position - Camera.CFrame.Position).Unit
-					local facing = Camera.CFrame.LookVector:Dot(direction) > 0.5
+				local direction = (hrp.Position - Camera.CFrame.Position).Unit
+				local facing = Camera.CFrame.LookVector:Dot(direction) > 0.5
 
-					if onScreen and facing then
-						local mouseDist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(screenPos.X, screenPos.Y)).Magnitude
-						if mouseDist < shortestDist then
-							shortestDist = mouseDist
-							closestTarget = hrp
-						end
+				if onScreen and facing then
+					local mouseDist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(screenPos.X, screenPos.Y)).Magnitude
+					if mouseDist < shortestDist then
+						shortestDist = mouseDist
+						closestTarget = hrp
 					end
 				end
 			end
@@ -263,6 +252,7 @@ end
 
 RunService.RenderStepped:Connect(function()
 	if not aimbotEnabled then return end
+
 	local target = getClosestTarget()
 	if target then
 		local cameraPos = Camera.CFrame.Position
