@@ -630,6 +630,7 @@ local moduleData = {
     {name = "Inf Jump", color = Color3.fromRGB(255, 120, 200)},
     {name = "Speed", color = Color3.fromRGB(120, 180, 255)},
     {name = "FOV", color = Color3.fromRGB(200, 120, 255)},
+    {name = "Trigger Bot", color = Color3.fromRGB(255, 120, 120)},
 }
 
 for i, data in ipairs(moduleData) do
